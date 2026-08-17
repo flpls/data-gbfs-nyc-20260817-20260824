@@ -15,7 +15,6 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-GBFS_BASE = "https://gbfs.citibikenyc.com/gbfs/2"
 STATION_INFO_URL = "https://gbfs.citibikenyc.com/gbfs/en/station_information.json"
 STATION_STATUS_URL = "https://gbfs.citibikenyc.com/gbfs/en/station_status.json"
 
