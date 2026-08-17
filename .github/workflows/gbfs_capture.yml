@@ -15,7 +15,7 @@ jobs:
         run: |
           NOW=$(date -u +%s)
           START=$(date -u -d "2026-08-17 04:00:00 UTC" +%s)
-          END=$(date -u -d "2026-08-24 04:00:00 UTC" +%s)
+          END=$(date -u -d "2026-09-01 04:00:00 UTC" +%s)
           if [ "$NOW" -ge "$START" ] && [ "$NOW" -le "$END" ]; then
             echo "in_window=true" >> $GITHUB_OUTPUT
           else
