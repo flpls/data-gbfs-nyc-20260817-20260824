@@ -1,0 +1,51 @@
+name: GBFS Citi Bike Capture
+
+on:
+  schedule:
+    - cron: "0,30 * * * *"
+  workflow_dispatch:
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check capture window
+        id: window
+        run: |
+          NOW=$(date -u +%s)
+          START=$(date -u -d "2026-08-17 04:00:00 UTC" +%s)
+          END=$(date -u -d "2026-08-24 04:00:00 UTC" +%s)
+          if [ "$NOW" -ge "$START" ] && [ "$NOW" -le "$END" ]; then
+            echo "in_window=true" >> $GITHUB_OUTPUT
+          else
+            echo "in_window=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Checkout repo
+        if: steps.window.outputs.in_window == 'true'
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        if: steps.window.outputs.in_window == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: capture/requirements.txt
+
+      - name: Install dependencies
+        if: steps.window.outputs.in_window == 'true'
+        run: pip install -r capture/requirements.txt
+
+      - name: Run capture
+        if: steps.window.outputs.in_window == 'true'
+        run: python capture/fetch_gbfs.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RELEASE_TAG: data-gbfs-nyc-20260817-20260824
+
+      - name: Log skip (outside window)
+        if: steps.window.outputs.in_window == 'false'
+        run: echo "Outside capture window. No action taken."
