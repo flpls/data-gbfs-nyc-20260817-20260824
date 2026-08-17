@@ -16,8 +16,8 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 GBFS_BASE = "https://gbfs.citibikenyc.com/gbfs/2"
-STATION_INFO_URL = f"{GBFS_BASE}/en/station_information.json"
-STATION_STATUS_URL = f"{GBFS_BASE}/en/station_status.json"
+STATION_INFO_URL = "https://gbfs.citibikenyc.com/gbfs/en/station_information.json"
+STATION_STATUS_URL = "https://gbfs.citibikenyc.com/gbfs/en/station_status.json"
 
 EDT = timezone(timedelta(hours=-4))
 
@@ -33,10 +33,7 @@ HEADERS = {
 
 
 def fetch_json(url):
-    headers = {
-        "User-Agent": "Mozilla/5.0 (compatible; citibike-gbfs-research/1.0)"
-    }
-    resp = requests.get(url, headers=headers, timeout=30)
+    resp = requests.get(url, timeout=30)
     resp.raise_for_status()
     return resp.json()
 
